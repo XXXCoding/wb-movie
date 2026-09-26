@@ -1,0 +1,140 @@
+{
+  "37": {
+    "class_type": "UnetLoaderGGUF",
+    "inputs": {
+      "unet_name": "Wan2.2-T2V-A14B-HighNoise-Q4_K_M.gguf"
+    },
+    "_meta": { "title": "高噪声模型 (GGUF)" }
+  },
+  "56": {
+    "class_type": "UnetLoaderGGUF",
+    "inputs": {
+      "unet_name": "Wan2.2-T2V-A14B-LowNoise-Q4_K_M.gguf"
+    },
+    "_meta": { "title": "低噪声模型 (GGUF)" }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "type": "wan",
+      "device": "default"
+    },
+    "_meta": { "title": "文本编码器" }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "wan_2.1_vae.safetensors"
+    },
+    "_meta": { "title": "VAE" }
+  },
+  "67": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "model": ["37", 0],
+      "lora_name": "wan22_t2v_seko_v2_high_noise_4step.safetensors",
+      "strength_model": 1.0
+    },
+    "_meta": { "title": "高噪声加速LoRA" }
+  },
+  "68": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "model": ["56", 0],
+      "lora_name": "wan22_t2v_seko_v2_low_noise_4step.safetensors",
+      "strength_model": 1.0
+    },
+    "_meta": { "title": "低噪声加速LoRA" }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "{{PROMPT}}",
+      "clip": ["38", 0]
+    },
+    "_meta": { "title": "正向提示词" }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "{{NEGATIVE}}",
+      "clip": ["38", 0]
+    },
+    "_meta": { "title": "负向提示词" }
+  },
+  "59": {
+    "class_type": "EmptyHunyuanLatentVideo",
+    "inputs": {
+      "width": {{WIDTH}},
+      "height": {{HEIGHT}},
+      "length": {{LENGTH}},
+      "batch_size": 1
+    },
+    "_meta": { "title": "视频潜空间" }
+  },
+  "57": {
+    "class_type": "KSamplerAdvanced",
+    "inputs": {
+      "model": ["67", 0],
+      "add_noise": "enable",
+      "noise_seed": {{SEED}},
+      "steps": {{STEPS}},
+      "cfg": {{CFG}},
+      "sampler_name": "{{SAMPLER}}",
+      "scheduler": "{{SCHEDULER}}",
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["59", 0],
+      "start_at_step": 0,
+      "end_at_step": {{BOUNDARY}},
+      "return_with_leftover_noise": "enable"
+    },
+    "_meta": { "title": "采样器-高噪声阶段" }
+  },
+  "58": {
+    "class_type": "KSamplerAdvanced",
+    "inputs": {
+      "model": ["68", 0],
+      "add_noise": "disable",
+      "noise_seed": 0,
+      "steps": {{STEPS}},
+      "cfg": {{CFG}},
+      "sampler_name": "{{SAMPLER}}",
+      "scheduler": "{{SCHEDULER}}",
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["57", 0],
+      "start_at_step": {{BOUNDARY}},
+      "end_at_step": 10000,
+      "return_with_leftover_noise": "disable"
+    },
+    "_meta": { "title": "采样器-低噪声阶段" }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["58", 0],
+      "vae": ["39", 0]
+    },
+    "_meta": { "title": "VAE解码" }
+  },
+  "60": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": ["8", 0],
+      "fps": {{FPS}}
+    },
+    "_meta": { "title": "组装视频" }
+  },
+  "61": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": ["60", 0],
+      "filename_prefix": "{{PREFIX}}",
+      "format": "mp4",
+      "codec": "h264"
+    },
+    "_meta": { "title": "保存视频" }
+  }
+}

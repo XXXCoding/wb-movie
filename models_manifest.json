@@ -1,0 +1,113 @@
+{
+  "_comment": "本地视频生成环境部署清单。sha256 为 null 时只校验文件大小（下载后建议人工核验一次）。",
+  "python_embed": {
+    "version": "3.12.10",
+    "urls": [
+      "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
+      "https://mirrors.huaweicloud.com/python/3.12.10/python-3.12.10-embed-amd64.zip"
+    ]
+  },
+  "torch": {
+    "index": "cu130",
+    "wheels_dir_url_cn": "https://mirrors.aliyun.com/pytorch-wheels/cu130/",
+    "wheels": [
+      "torch-2.14.0+cu130-cp312-cp312-win_amd64.whl",
+      "torchvision-0.29.0+cu130-cp312-cp312-win_amd64.whl",
+      "torchaudio-2.11.0+cu130-cp312-cp312-win_amd64.whl"
+    ],
+    "intl_index_url": "https://download.pytorch.org/whl/cu130"
+  },
+  "comfyui": {
+    "urls": [
+      "https://gitee.com/mirrors/comfyui/repository/archive/master.zip",
+      "https://ghfast.top/https://github.com/comfyanonymous/ComfyUI/archive/refs/heads/master.zip"
+    ],
+    "min_file_count": 1100,
+    "must_exist": ["main.py", "requirements.txt", "comfy/options.py", "comfy_extras/nodes_video.py"]
+  },
+  "gguf_plugin": {
+    "urls": [
+      "https://ghfast.top/https://github.com/city96/ComfyUI-GGUF/archive/refs/heads/main.zip",
+      "https://github.com/city96/ComfyUI-GGUF/archive/refs/heads/main.zip"
+    ],
+    "must_exist": ["nodes.py", "loader.py", "ops.py"]
+  },
+  "pip_extra_pkgs": ["gguf"],
+  "pip_broken_on_tuna": "comfyui-workflow-templates-media-assets-02==0.1.6",
+  "models": [
+    {
+      "name": "Wan2.2-T2V-A14B-HighNoise-{QUANT}.gguf",
+      "target": "diffusion_models",
+      "variants": {
+        "Q3_K_M": { "size": 7174468096, "sha256": null },
+        "Q4_K_S": { "size": 8746512896, "sha256": null },
+        "Q4_K_M": { "size": 9650090496, "sha256": "e0c490c6e316fd91ff52034e4ca66b825717e33ff11624585c0ccfcb5d410c59" },
+        "Q5_K_M": { "size": 10790416896, "sha256": null }
+      },
+      "path_templates": {
+        "modelscope": "https://www.modelscope.cn/models/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/master/HighNoise/Wan2.2-T2V-A14B-HighNoise-{QUANT}.gguf",
+        "hf_mirror": "https://hf-mirror.com/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-T2V-A14B-HighNoise-{QUANT}.gguf",
+        "huggingface": "https://huggingface.co/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-T2V-A14B-HighNoise-{QUANT}.gguf"
+      }
+    },
+    {
+      "name": "Wan2.2-T2V-A14B-LowNoise-{QUANT}.gguf",
+      "target": "diffusion_models",
+      "variants": {
+        "Q3_K_M": { "size": 7174468096, "sha256": null },
+        "Q4_K_S": { "size": 8746512896, "sha256": null },
+        "Q4_K_M": { "size": 9650090496, "sha256": "091a5bae02e14aa016bc9b10a7892efda4c629346b81c5dcebbe30ea2ac8923a" },
+        "Q5_K_M": { "size": 10790416896, "sha256": null }
+      },
+      "path_templates": {
+        "modelscope": "https://www.modelscope.cn/models/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/master/LowNoise/Wan2.2-T2V-A14B-LowNoise-{QUANT}.gguf",
+        "hf_mirror": "https://hf-mirror.com/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-T2V-A14B-LowNoise-{QUANT}.gguf",
+        "huggingface": "https://huggingface.co/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-T2V-A14B-LowNoise-{QUANT}.gguf"
+      }
+    },
+    {
+      "name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "target": "text_encoders",
+      "size": 6735906897,
+      "sha256": "c3355d30191f1f066b26d93fba017ae9809dce6c627dda5f6a66eaa651204f68",
+      "path_templates": {
+        "modelscope": "https://www.modelscope.cn/models/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/master/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "hf_mirror": "https://hf-mirror.com/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "huggingface": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      }
+    },
+    {
+      "name": "wan_2.1_vae.safetensors",
+      "target": "vae",
+      "size": 253815318,
+      "sha256": "2fc39d31359a4b0a64f55876d8ff7fa8d780956ae2cb13463b0223e15148976b",
+      "path_templates": {
+        "modelscope": "https://www.modelscope.cn/models/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/master/VAE/Wan2.1_VAE.safetensors",
+        "hf_mirror": "https://hf-mirror.com/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/main/VAE/Wan2.1_VAE.safetensors",
+        "huggingface": "https://huggingface.co/QuantStack/Wan2.2-T2V-A14B-GGUF/resolve/main/VAE/Wan2.1_VAE.safetensors"
+      }
+    },
+    {
+      "name": "wan22_t2v_seko_v2_high_noise_4step.safetensors",
+      "target": "loras",
+      "size": 1226977424,
+      "sha256": "78cc2c9b44aca9ded8f69c6619639edca7459308051161253c3aa04ac6169a58",
+      "path_templates": {
+        "modelscope": "https://www.modelscope.cn/models/lightx2v/Wan2.2-Lightning/resolve/master/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V2.0/high_noise_model.safetensors",
+        "hf_mirror": "https://hf-mirror.com/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V2.0/high_noise_model.safetensors",
+        "huggingface": "https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V2.0/high_noise_model.safetensors"
+      }
+    },
+    {
+      "name": "wan22_t2v_seko_v2_low_noise_4step.safetensors",
+      "target": "loras",
+      "size": 1226977424,
+      "sha256": "6bb498f926e71217106c3642e75273580c1de2dec0a6902cbae8e83d2402d5cf",
+      "path_templates": {
+        "modelscope": "https://www.modelscope.cn/models/lightx2v/Wan2.2-Lightning/resolve/master/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V2.0/low_noise_model.safetensors",
+        "hf_mirror": "https://hf-mirror.com/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V2.0/low_noise_model.safetensors",
+        "huggingface": "https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V2.0/low_noise_model.safetensors"
+      }
+    }
+  ]
+}
